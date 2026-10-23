@@ -1,5 +1,28 @@
 # Exploring spatio-temporal soccer events using public event data
 
+## Proyecto de scouting y análisis exploratorio
+
+Este proyecto carga eventos de una competición de Wyscout, añade el nombre de cada
+jugador mediante `playerId` y resume cuántas acciones tiene registradas cada jugador.
+
+### Ejecución
+
+1. Instala pandas: `python -m pip install pandas`.
+2. Descarga y extrae los eventos en `data/events/` desde
+   [Figshare](https://doi.org/10.6084/m9.figshare.c.4415000.v5).
+3. Descarga el catálogo de jugadores desde
+   [players.json](https://ndownloader.figshare.com/files/15073721) y guárdalo como
+   `data/players.json`.
+4. Ejecuta `python main.py` desde esta carpeta.
+
+En `main.py`, cambia `TORNEO` para elegir `Italy`, `England`, `Germany`, `France`,
+`Spain`, `European_Championship` o `World_Cup`.
+
+Los archivos grandes descargados se excluyen del repositorio mediante `.gitignore`;
+cada JSON de liga supera el límite de 100 MB por archivo de GitHub. La descarga
+pública de eventos está bajo CC BY 4.0. Cita a Pappalardo et al. (2019) y a Wyscout
+como proveedor de los datos al compartir análisis derivados.
+
 <img width=200, src="https://raw.githubusercontent.com/scikit-mobility/tutorials/master/AMLD%202020/sobigdata_logo.jpg" />
 
 Tutorial supported by EU project <a href="https://cordis.europa.eu/project/id/871042">SoBigData++</a> RI (Grant Agreement 871042).

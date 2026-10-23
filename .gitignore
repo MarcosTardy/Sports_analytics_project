@@ -1,0 +1,7 @@
+# Datos descargados: los JSON de eventos superan el límite de 100 MB por archivo de GitHub.
+/data/events/*.json
+/data/players.json
+
+# Archivos temporales de Python
+__pycache__/
+*.py[cod]

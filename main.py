@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from analisis_exploratorio import contar_acciones_por_jugador
+from analisis_exploratorio import contar_acciones_por_jugador, contar_subeventos
 from cargar_eventos import cargar_eventos, cargar_jugadores
 
 
@@ -15,10 +15,22 @@ ARCHIVO_JUGADORES = Path(__file__).resolve().parent / "data" / "players.json"
 
 def main() -> None:
     eventos, df_eventos = cargar_eventos(ARCHIVO_EVENTOS)
-    nombres_jugadores = cargar_jugadores(ARCHIVO_JUGADORES)
+    df_jugadores = cargar_jugadores(ARCHIVO_JUGADORES)
+    nombres_jugadores = df_jugadores.set_index("wyId")["playerName"]
     df_eventos["playerName"] = (
         df_eventos["playerId"].map(nombres_jugadores).fillna("Sin identificar")
     )
+    print("Variables del dataframe jugadores:")
+    print(", ".join(df_jugadores.columns))
+    # Solo jugadores con al menos un evento en el torneo seleccionado.
+    ids_torneo = df_eventos["playerId"].dropna().unique()
+    df_jugadores_torneo = df_jugadores[df_jugadores["wyId"].isin(ids_torneo)]
+    futbolistas_por_posicion = (
+        df_jugadores_torneo["position"].value_counts().sort_index()
+    )
+    print(f"\nFutbolistas de {TORNEO} por posición:")
+    for posicion, cantidad in futbolistas_por_posicion.items():
+        print(f"  {posicion}: {cantidad:,}")
     print(f"Eventos cargados: {len(eventos):,}")
     print(f"Dimensiones de la tabla: {df_eventos.shape[0]:,} filas x "
           f"{df_eventos.shape[1]} columnas")
@@ -48,6 +60,14 @@ def main() -> None:
     for player_id in jugadores_minimo:
         nombre = nombres_jugadores.get(player_id, "Nombre no encontrado")
         print(f"  {nombre} (playerId: {player_id})")
+
+    subeventos = contar_subeventos(df_eventos)
+    print("\nSubeventos registrados:")
+    print(f"Tipos de subevento distintos: {len(subeventos):,}")
+    print(f"Registros con nombre de subevento: {subeventos.sum():,}")
+    print("Frecuencia por subevento:")
+    for nombre_subevento, cantidad in subeventos.items():
+        print(f"  {nombre_subevento}: {cantidad:,}")
 
 
 if __name__ == "__main__":

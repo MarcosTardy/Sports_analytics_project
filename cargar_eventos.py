@@ -22,8 +22,8 @@ def cargar_eventos(ruta: Path) -> tuple[list[dict], pd.DataFrame]:
     return eventos, df_eventos
 
 
-def cargar_jugadores(ruta: Path) -> pd.Series:
-    """Carga el catálogo y devuelve un mapa de playerId a nombre completo."""
+def cargar_jugadores(ruta: Path) -> pd.DataFrame:
+    """Carga y devuelve el dataframe completo del catálogo de jugadores."""
     if not ruta.exists():
         raise FileNotFoundError(f"No se encontró el catálogo de jugadores: {ruta}")
 
@@ -47,4 +47,9 @@ def cargar_jugadores(ruta: Path) -> pd.Series:
         "shortName", pd.Series(index=df_jugadores.index, dtype="string")
     )
     nombres = nombres.mask(nombres.eq(""), short_name)
-    return pd.Series(nombres.values, index=df_jugadores["wyId"], name="playerName")
+    df_jugadores["playerName"] = nombres
+    df_jugadores["position"] = df_jugadores["role"].apply(
+        lambda role: role.get("name", "Sin posición")
+        if isinstance(role, dict) else "Sin posición"
+    )
+    return df_jugadores
